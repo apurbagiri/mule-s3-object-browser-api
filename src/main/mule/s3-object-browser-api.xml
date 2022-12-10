@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <http:listener-config name="s3-object-browser-api-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
-    </http:listener-config>
-    <apikit:config name="s3-object-browser-api-config" api="s3-object-browser-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
     <flow name="s3-object-browser-api-main">
         <http:listener config-ref="s3-object-browser-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -15,86 +11,6 @@
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="s3-object-browser-api-config" />
-        <error-handler>
-            <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Bad request"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Resource not found"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Method not allowed"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not acceptable"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Unsupported media type"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not Implemented"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-        </error-handler>
     </flow>
     <flow name="s3-object-browser-api-console">
         <http:listener config-ref="s3-object-browser-api-httpListenerConfig" path="/console/*">
@@ -107,70 +23,12 @@ output application/json
             </http:error-response>
         </http:listener>
         <apikit:console config-ref="s3-object-browser-api-config" />
-        <error-handler>
-            <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform>
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Resource not found"}]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-        </error-handler>
     </flow>
     <flow name="post:\get-object:multipart\form-data:s3-object-browser-api-config">
-        <logger level="INFO" message="post:\get-object:multipart\form-data:s3-object-browser-api-config" />
+		<flow-ref doc:name="get-object" doc:id="318775d4-8406-430d-99cc-9a3392af6441" name="get-object"/>
     </flow>
     <flow name="post:\list-objects:multipart\form-data:s3-object-browser-api-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  "0": {
-    objectKey: "0YSIZVK06BPUU3L5B9.txt",
-    objectSize: 10000,
-    updateDate: "2022-12-09T22:13:21",
-    etag: "4562a1c6b8dbeccf78f8cec7c69d79a6"
-  },
-  "1": {
-    objectKey: "4PXKOL9NXAX5PYJ81Q.txt",
-    objectSize: 10000,
-    updateDate: "2022-12-09T22:13:23",
-    etag: "67532066ff1543464821f23b6633a9c9"
-  },
-  "2": {
-    objectKey: "6Z4YJSCUHUX3YFT6MP.txt",
-    objectSize: 10000,
-    updateDate: "2022-12-09T22:13:21",
-    etag: "2864b4dff04dc7c5df757119ca622cbd"
-  },
-  "3": {
-    objectKey: "FX85NL9JHZG063764C.txt",
-    objectSize: 10000,
-    updateDate: "2022-12-09T22:13:22",
-    etag: "18dd63f88a62c047c89a8a4dc9f2ca4b"
-  },
-  "4": {
-    objectKey: "GVTXTFJ6K2YR2U9HBC.txt",
-    objectSize: 10000,
-    updateDate: "2022-12-09T22:13:20",
-    etag: "10d564f361e6aa07ca633489408e6e74"
-  },
-  "5": {
-    objectKey: "WV6C9UUV234BGBRZNH.txt",
-    objectSize: 10000,
-    updateDate: "2022-12-09T22:13:22",
-    etag: "f45615f5f2062e3af66d73e739464598"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<flow-ref doc:name="list-objects" doc:id="d08b25f9-4141-4d93-9fe8-d4bcebb941bb" name="list-objects"/>
+
     </flow>
 </mule>
