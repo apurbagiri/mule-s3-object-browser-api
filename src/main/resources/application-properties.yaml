@@ -1,0 +1,25 @@
+api: 
+    localTimeZone: "mule.timezone.ist"
+
+
+
+
+
+
+
+
+
+
+
+
+# LISTED A COUPLE OF TIMEZONES FOR CHANGE. 
+# FOR FULL LIST, CHECK https://docs.mulesoft.com/dataweave/2.4/dataweave-cookbook-change-time-zone        
+mule: 
+    timezone: 
+        est: "US/Eastern"
+        central: "US/Central"
+        pacific: "US/Pacific"
+        ist: "Asia/Kolkata"
+        gmt: "GMT"
+        cet: "CET"
+        utc: "UTC"

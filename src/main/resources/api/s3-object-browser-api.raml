@@ -21,19 +21,22 @@ description: |
         properties:
           aws-access-key:
             description: Access key that has right permissions to the target S3 bucket
+            required: true
             example: AKIAQGQCZXWCA32OYI5K
-            type: string
+            type: string            
           aws-secret-key:
             description: Secret key to the provided access key
+            required: true
             example: NzkgzMDjcyWPqUosDs1IjOgCT6N4GHPN1oiClT8i
             type: string
           s3-bucket-name:
             description: Objects from this S3 bucket are returned
+            required: true
             example: test-bucket-apurba-giri-12345
             type: string
           s3-bucket-region:
             description: S3 bucket must belong to this region
-            default: us-east-1
+            required: true
             example: us-east-1
             type: string
           object-prefix:
@@ -42,12 +45,12 @@ description: |
             type: string
           from-date:
             description: Objects that have update date after this from-date are returned
-            example: 2022-12-10T11:00:00
-            type: datetime-only
+            example: 2022-12-10T11:00:00Z
+            type: datetime
           to-date:
             description: Objects that have update before this to-date are returned
-            example: 2022-12-10T16:00:00
-            type: datetime-only
+            example: 2022-12-10T16:00:00Z
+            type: datetime
     displayName: Retrieve S3 Object List
     description: Use this resource to retrieve the list of S3 objects from a given S3 bucket within a provided date range.
     responses:
@@ -125,12 +128,12 @@ description: |
               message:
                 example: Not Implemented
                 type: string
-      "503":
+      "500":
         body:
           application/json:
             properties:
               message:
-                example: Error Occurred. Access Key not found
+                example: Access key ID or Secret access key cannot be blank
                 type: string
 securedBy: []
 /get-object:
@@ -142,23 +145,27 @@ securedBy: []
         properties:
           aws-access-key:
             description: Access key that has right permissions to the target S3 bucket
+            required: true
             example: AKIAQGQCZXWCA32OYI5K
             type: string
           aws-secret-key:
             description: Secret key to the provided access key
+            required: true
             example: NzkgzMDjcyWPqUosDs1IjOgCT6N4GHPN1oiClT8i
             type: string
           s3-bucket-name:
             description: Objects from this S3 bucket are returned
+            required: true
             example: test-bucket-apurba-giri-12345
             type: string
           s3-bucket-region:
             description: S3 bucket must belong to this region
-            default: us-east-1
+            required: true
             example: us-east-1
             type: string
           object-key:
             description: Name of the object to be retrieved
+            required: true
             example: file-name.txt
             type: string
     responses:
@@ -202,10 +209,10 @@ securedBy: []
               message:
                 example: Not Implemented
                 type: string
-      "503":
+      "500":
         body:
           application/json:
             properties:
               message:
-                example: Error Occurred. Access Key not found
+                example: Access key ID or Secret access key cannot be blank
                 type: string
