@@ -24,7 +24,11 @@
         </http:listener>
         <apikit:console config-ref="s3-object-browser-api-config" />
     </flow>
-    <flow name="post:\get-object:multipart\form-data:s3-object-browser-api-config">
+    <flow name="s3-object-browser-web" doc:id="1a7276bd-0c5b-4883-98d6-d9210aa34e52" >
+		<http:listener doc:name="Listener" doc:id="0b9ad5c3-c297-437b-a988-eb59c4e682b2" config-ref="s3-object-browser-api-httpListenerConfig" path="/"/>
+		<parse-template doc:name="Parse Template" doc:id="572e2379-8110-4196-952f-bd0f0f53b175" location="web\index.html"/>
+	</flow>
+	<flow name="post:\get-object:multipart\form-data:s3-object-browser-api-config">
 		<flow-ref doc:name="get-object" doc:id="318775d4-8406-430d-99cc-9a3392af6441" name="get-object"/>
     </flow>
     <flow name="post:\list-objects:multipart\form-data:s3-object-browser-api-config">

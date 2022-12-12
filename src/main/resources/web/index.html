@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/apurbagiri/s3-object-browser-api/static-resources/aws-s3-favicon.ico?raw=true"/>
+
+		<!-- Stylesheets -->
+		<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+  
+		<title>S3 Object Browser</title>
+    </head>
+
+    <body class="bg-light">
+        <div class="container">
+            <div class="text-center">
+                <img class="d-block mx-auto mb-4" src="https://raw.githubusercontent.com/apurbagiri/s3-object-browser-api/static-resources/s3-object-browser-api-banner.png?raw=true" alt=""">
+                <h1>S3 Object Browser</h1>
+                <p class="lead">Retrieve & download S3 bucket objects within a given time window</p>
+            </div>
+
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="card">
+                      <div class="card-header">
+                            <h6>Search Options</h6>
+                      </div>
+					  <form id="search_form" action="api/list-objects" method="post" enctype="multipart/form-data" autocomplete="off">
+					  <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="aws-access-key">AWS Access Key</label>
+                                        <input type="password" class="form-control" id="aws-access-key" name="aws-access-key" required />
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="aws-secret-key">AWS Secret Key</label>
+                                        <input type="password" class="form-control" id="aws-secret-key" name="aws-secret-key" required />
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="s3-bucket-name">S3 Bucket Name</label>
+                                        <input type="text" class="form-control" id="s3-bucket-name" name="s3-bucket-name" required />
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="s3-bucket-region">Bucket Region</label>
+                                        <select class="custom-select selectpicker" id="s3-bucket-region" name="s3-bucket-region" required>
+											<optgroup label="US">
+											<option value="us-east-1" selected>us-east-1</option>
+											<option value="us-east-2">us-east-2</option>
+											<option value="us-west-1">us-west-1</option>
+											<option value="us-west-2">us-west-2</option>
+											</optgroup>
+
+											<optgroup label="Asia Pacific">
+											<option value="ap-south-1">ap-south-1</option>
+											<option value="ap-northeast-3">ap-northeast-3</option>
+											<option value="ap-northeast-2">ap-northeast-2</option>
+											<option value="ap-southeast-1">ap-southeast-1</option>
+											<option value="ap-southeast-2">ap-southeast-2</option>
+											<option value="ap-northeast-1">ap-northeast-1</option>
+											<option value="ap-east-1">ap-east-1</option>
+											<option value="ap-south-2">ap-south-2</option>
+											<option value="ap-southeast-3">ap-southeast-3</option>
+											</optgroup>
+
+											<optgroup label="Canada (Central)">
+											<option value="ca-central-1">ca-central-1</option>
+											</optgroup>
+
+											<optgroup label="Europe">
+											<option value="eu-central-1">eu-central-1</option>
+											<option value="eu-west-1">eu-west-1</option>
+											<option value="eu-west-2">eu-west-2</option>
+											<option value="eu-west-3">eu-west-3</option>
+											<option value="eu-north-1">eu-north-1</option>
+											<option value="eu-south-1">eu-south-1</option>
+											<option value="eu-south-2">eu-south-2</option>
+											<option value="eu-central-2">eu-central-2</option>
+											</optgroup>
+
+											<optgroup label="South America">
+											<option value="sa-east-1">sa-east-1</option>
+											</optgroup>
+
+											<optgroup label="Africa">
+											<option value="af-south-1">af-south-1</option>
+											</optgroup>
+
+											<optgroup label="Middle East">
+											<option value="me-south-1">me-south-1</option>
+											<option value="me-central-1">me-central-1</option>
+											</optgroup>
+                                        </select>
+                                    </div>									
+                                </div>
+					  </div>
+                      <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="object-prefix">Object Prefix</label>
+                                        <input type="text" class="form-control" id="object-prefix" name="object-prefix"/>
+                                    </div>									
+								
+                                    <div class="col-md-3 mb-3">
+                                        <label for="search-period">Search Period</label>
+                                        <select class="custom-select" id="search-period" name="search-period" required>
+                                            <option value="5" selected>Last 5 min</option>
+                                            <option value="10">Last 10 min</option>
+											<option value="30">Last 30 min</option>
+											<option value="60">Last 1 Hour</option>
+											<option value="360">Last 6 Hours</option>
+											<option value="720">Last 12 Hours</option>
+											<option value="1440">Last 24 Hours</option>
+											<option value="custom">Custom Range</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="daterangepicker-from-date">From</label>
+											<div class="input-group">
+												<span class="input-group-prepend">    
+													<span class="input-group-text">
+													  <i class="fa fa-calendar"></i>
+													</span>
+												</span>											
+												<input id="daterangepicker-from-date" class="form-control" type="text" name="daterangepicker-from-date" disabled required/>
+											</div>															
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label for="daterangepicker-to-date">To</label>
+											<div class="input-group">
+												<span class="input-group-prepend">    
+													<span class="input-group-text">
+													  <i class="fa fa-calendar"></i>
+													</span>
+												</span>											
+												<input id="daterangepicker-to-date" class="form-control" type="text" name="daterangepicker-to-date" disabled required/>
+											</div>															
+                                    </div>
+                                </div>
+                                <hr class="mb-3" />
+                                <input id="btn-submit" class="btn btn-primary btn-lg btn-block"  type="submit" name="btn-submit" value="Search" />
+                      </div>
+					  <input type="hidden" id="object-key" name="object-key"/>
+					  <input type="hidden" id="from" name="from"/>
+					  <input type="hidden" id="to" name="to"/>
+					  </form>
+                    </div>
+					</div>                  
+            </div>
+            <hr class="mb-3" />
+
+			<div class="row">
+				<div class="col-12 text-center">
+					<div class="card">
+						<div class="card-header">
+							<h6>Search Result</h6>
+						</div>
+						<div class="card-body">
+							<table class="table table-sm table-striped table-hover" id="data_table"
+								data-pagination="true"
+								data-search="false" 
+								data-id-field="etag"
+								data-page-list="[10, 25, 50, 100, all]"
+								data-side-pagination="client"
+								data-show-fullscreen="false"
+								data-sort-name="updateDate"
+								>
+								<thead>
+									<tr>
+										<th scope="col" data-sortable="true" data-field="objectKey">Object Key</th>
+										<th scope="col" data-sortable="true" data-formatter="fileSizeFormatter" data-field="objectSize">Size</th>
+										<th dscope="col" data-sortable="true" data-formatter="dateFormatter" data-field="updateDate">Last Updated</th>
+										<th scope="col" data-formatter="downloadFormatter" data-events="window.operateEvents" >Download</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="no-data">
+										<td id="data-table-msg" colspan="4" >No data</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+		
+				</div>
+			</div>
+			
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">&copy; 2022 Company</p>
+				   <ul class="list-inline">
+                    <li class="list-inline-item"><a href="https://github.com/apurbagiri" class="link-primary">apurbagiri</a></li>
+                  </ul>
+            </footer>
+        </div>
+
+		<!-- JavaScripts (in sequence)-->
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha384-i61gTtaoovXtAbKjo903+O55Jkn2+RtzHtvNez+yI49HAASvznhe9sZyjaSHTau9" crossorigin="anonymous" ></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js" integrity="sha512-ubuT8Z88WxezgSqf3RLuNi5lmjstiJcyezx34yIU2gAHonIi27Na7atqzUZCOoY4CExaoFumzOsFQ2Ch+I/HCw==" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>        
+		<script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+		
+<script>
+
+		var $searchPeriod = $('#search-period');
+		var $fromDate = $('#daterangepicker-from-date');
+		var $toDate = $('#daterangepicker-to-date');
+		
+		$(function () {
+			$('#data_table').bootstrapTable({
+				height: 450
+			});
+		});			
+		
+		$(function () {
+			$("#aws-access-key").val(sessionStorage.getItem("aws-access-key"));
+			$("#aws-secret-key").val(sessionStorage.getItem("aws-secret-key"));
+			$("#s3-bucket-name").val(sessionStorage.getItem("s3-bucket-name"));
+			$("#s3-bucket-region").val((sessionStorage.getItem("s3-bucket-region") === null)? "us-east-1" : sessionStorage.getItem("s3-bucket-region"));
+			$("#object-prefix").val(sessionStorage.getItem("object-prefix"));
+		});
+
+		$("#search_form").submit(function (event) {
+			event.preventDefault();
+			$("#btn-submit").prop("disabled", true);
+			$('#data_table').bootstrapTable('showLoading');
+			setPeriodDate();
+  			submitSearch(this);
+		});
+
+		window.operateEvents = {
+			'click .download': function (e, value, row, index) {
+				e.preventDefault();
+				$('#data_table').bootstrapTable('showLoading');
+				$("#object-key").val(row.objectKey);
+				downloadObject();
+			}
+		}
+
+		$("input[id^='daterangepicker']").daterangepicker({
+			 timePicker: true,
+			 timePicker24Hour: true,
+			 singleDatePicker: true,
+			 showDropdowns: true,
+			locale: {
+				format: 'M/DD/YYYY HH:mm'
+			}
+		});
+
+		$fromDate.change(function() {
+			$("#from").val(returnDateISOString($(this).val()));
+		});
+
+		$toDate.change(function() {
+			$("#to").val(returnDateISOString($(this).val()));
+		});
+
+		function returnDateISOString(dtString) {
+			var dt = new Date(dtString);
+			return isValidDate(dt)? dt.toISOString(): "";
+		}
+
+		function isValidDate(dt) {
+		  return !isNaN(dt.getTime());
+		}
+
+		$searchPeriod.change(function() {
+		    if ($searchPeriod.val() == 'custom') {
+		        enableDateFields();
+		    } else {
+		        disableDateFields();
+				setPeriodDate();
+		    }
+		}).trigger('change');
+
+		$("#aws-access-key").on("input", function() {
+			sessionStorage.setItem("aws-access-key", $(this).val());
+		});
+
+		$("#aws-secret-key").on("input", function() {
+			sessionStorage.setItem("aws-secret-key", $(this).val());
+		});
+		
+		$("#s3-bucket-name").on("input", function() {
+			sessionStorage.setItem("s3-bucket-name", $(this).val());
+		});
+		
+		$("#s3-bucket-region").on("input", function() {
+			sessionStorage.setItem("s3-bucket-region", $(this).val());
+		});
+
+		$("#object-prefix").on("input", function() {
+			sessionStorage.setItem("object-prefix", $(this).val());
+		});
+
+
+		function disableDateFields() {
+			$fromDate.attr('disabled', 'disabled');
+			$toDate.attr('disabled', 'disabled');
+		}
+
+		function enableDateFields() {
+			$fromDate.removeAttr('disabled');
+			$toDate.removeAttr('disabled');		
+		}
+		
+		function setPeriodDate(){
+			if ($searchPeriod.val() != 'custom') {
+				$fromDate.val(moment().subtract($searchPeriod.val(), 'minutes').format('M/DD/YYYY HH:mm'));
+				$toDate.val(moment().format('M/DD/YYYY HH:mm'));
+				$("#from").val((new Date($fromDate.val())).toISOString());
+				$("#to").val((new Date($toDate.val())).toISOString());
+			}
+		}
+
+		function downloadFormatter(value, row, index) {
+			return [
+			  '<a class="download" href="javascript:void(0)" title="Download">',
+			  '<i class="fa fa-cloud-download" aria-hidden="true"></i>',
+			  '</a>  '
+			].join('')
+		  }
+	
+		function fileSizeFormatter(bytes, decimals = 2) {
+			if (!+bytes) return '0 Bytes'
+			const k = 1024
+			const dm = decimals < 0 ? 0 : decimals
+			const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+			const i = Math.floor(Math.log(bytes) / Math.log(k))
+			return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+		}
+		
+		function dateFormatter(dateString)
+		{	
+			var date = new Date(dateString)
+			var localOffset = date.getTimezoneOffset() * 60000;
+			var localTime = date.getTime();
+			date = localTime - localOffset;
+			return moment(date).format('YYYY-MM-DD HH:mm:ss');
+		}
+	
+		function submitSearch(context) {
+			var searchURI = $(context).attr("action"); 
+			var method = $(context).attr("method"); 
+			var formData = new FormData(context);							
+		    $.ajax({
+				url: searchURI,
+				type: method,
+				data: formData,
+				contentType: false,
+				cache: false,
+				processData: false,
+				success: function (data) {
+				$('#data_table').bootstrapTable('hideLoading');
+				$('#data_table').bootstrapTable('destroy').bootstrapTable({
+					height: 450,
+					data: data,
+					formatLoadingMessage: function() {
+					return 'Processing, please wait';
+					}
+				}); 
+				  console.log("Successfully retrieved S3 object list");
+				  $("#btn-submit").prop("disabled", false);
+				},
+				error: function (e) {
+				    console.log("ERROR : ", e);
+					$('#data_table').bootstrapTable('hideLoading');
+					$('#data-table-msg').html('<font color="#C60D0D">' + ((e.responseText === undefined) ? 'Error occurred while searching for objects' : e.responseText) + '</font>');
+					$("#btn-submit").prop("disabled", false);
+					}
+			}); 		
+		}
+
+		
+		function downloadObject() {
+			var downloadUri = "api/get-object"
+			var method = "POST"
+			var searchFormData = new FormData(search_form);
+			$.ajax({
+				url: downloadUri,
+				type: method,
+				data: searchFormData,
+				contentType: false,
+				cache: false,
+				processData: false,				 
+				success: 
+					function(responseObj, status, xhr){
+						var type = xhr.getResponseHeader('Content-Type');
+						var blob = new Blob([responseObj], { type: type });
+						var URL = window.URL || window.webkitURL;
+						var downloadUrl = URL.createObjectURL(blob);
+						var a = document.createElement("a");
+						if (typeof a.download === 'undefined') {
+                            window.location = downloadUrl;
+                        } else {
+							 a.href = downloadUrl;
+							 a.download = $("#object-key").val();
+							 document.body.appendChild(a);
+							 a.click();
+						}
+						setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100);
+						$('#data_table').bootstrapTable('hideLoading');
+						console.log("Successfully downloaded S3 object : ", $("#object-key").val());
+					},
+				error: 
+					function (e){
+						console.log("ERROR : ", e)
+						$('#data_table').bootstrapTable('hideLoading');
+					}
+				});	
+		}
+	
+	
+</script>
+
+    </body>
+</html>
