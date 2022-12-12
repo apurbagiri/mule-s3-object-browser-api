@@ -22,8 +22,8 @@ http://localhost:8081/console/
 <br />
 
 ### Known Issues
-* Downloading non-text based files (e.g. PDF, PNG, JPEG etc).  
-> Although, the file seems to be downloading correctly, there is likely content-type mismatch due to which, the file isn't being assembled correctly. I was working with text files while working on this, so didn't notice it earlier. Will try to fix it when I get time.
+* Downloading large size files
+> All media type download seems to be working fine when the file size is low. But, as the file size grows, the Mule AWS S3 connector seems to be throwing error `Unexpected error while Streaming content. Data read has a different checksum than expected. Was ..., but expected ...`. Tried increasing memory buffer size but that didn't help. Will look into it when I get a chance. 
 
 <br />
 
