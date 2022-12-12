@@ -45,7 +45,9 @@ payload filter ((item, index)
         </ee:transform>	</flow>
 	<flow name="get-object" doc:id="07a25e64-2dee-4846-a047-393faa8d4556">
 		<flow-ref doc:name="retrieve-form-data" doc:id="175e2f9c-f09a-411c-854b-bc06172db3f6" name="retrieve-form-data"/>
-		<s3:get-object doc:name="Get Object" doc:id="edd0b1cb-8533-432b-91b1-989330ee641e" config-ref="Amazon_S3_Configuration" bucketName='#[vars."s3-bucket-name"]' key='#[vars."object-key"]'/>
+		<s3:get-object doc:name="Get Object" doc:id="edd0b1cb-8533-432b-91b1-989330ee641e" config-ref="Amazon_S3_Configuration" bucketName='#[vars."s3-bucket-name"]' key='#[vars."object-key"]'>
+			<ee:repeatable-file-store-stream inMemorySize="10" bufferUnit="MB"/>
+		</s3:get-object>
 		<set-variable value='#[%dw 2.0&#10;import * from dw::core::Binaries&#10;output application/java&#10;---&#10;(vars.outboundHeaders default {&#10;}) ++ {&#10;	"Content-Disposition": "attachment; filename=" ++ vars."object-key",&#10;	"Content-Type": "application/octet-stream"&#10;}]' doc:name="outboundHeaders" doc:id="e82a133a-8ba6-47e8-adbd-45752d671be2" variableName="outboundHeaders" />
 	
 </flow>

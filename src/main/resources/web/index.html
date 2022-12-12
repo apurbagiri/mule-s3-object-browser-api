@@ -376,7 +376,6 @@
 			}); 		
 		}
 
-		
 		function downloadObject() {
 			var downloadUri = "api/get-object"
 			var method = "POST"
@@ -387,25 +386,41 @@
 				data: searchFormData,
 				contentType: false,
 				cache: false,
-				processData: false,				 
+				processData: false,
+				xhrFields: {responseType: 'blob'},
 				success: 
 					function(responseObj, status, xhr){
+						var filename = $("#object-key").val();						
 						var type = xhr.getResponseHeader('Content-Type');
 						var blob = new Blob([responseObj], { type: type });
-						var URL = window.URL || window.webkitURL;
-						var downloadUrl = URL.createObjectURL(blob);
-						var a = document.createElement("a");
-						if (typeof a.download === 'undefined') {
-                            window.location = downloadUrl;
-                        } else {
-							 a.href = downloadUrl;
-							 a.download = $("#object-key").val();
-							 document.body.appendChild(a);
-							 a.click();
+						
+						if(typeof window.navigator.msSaveBlob !== 'undefined'){
+							window.navigator.msSaveBlob(blob, filename);
 						}
-						setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100);
+						else {
+							var URL = window.URL || window.webkitURL;
+							var downloadUrl = URL.createObjectURL(blob);
+							
+							if(filename) {
+								var a = document.createElement("a");
+								if (typeof a.download === 'undefined') {
+									window.location.href = downloadUrl;
+								} else {
+									a.href = downloadUrl;
+									a.download = filename;
+									document.body.appendChild(a);
+									a.click();
+									document.body.removeChild(a);
+								}							
+							
+							} else {
+								window.location.href = downloadUrl;
+							}
+							
+							setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100);
+						}
 						$('#data_table').bootstrapTable('hideLoading');
-						console.log("Successfully downloaded S3 object : ", $("#object-key").val());
+						console.log("Successfully downloaded S3 object : ", filename);
 					},
 				error: 
 					function (e){
