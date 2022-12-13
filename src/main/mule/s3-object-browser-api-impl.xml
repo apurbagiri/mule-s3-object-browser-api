@@ -17,12 +17,6 @@ http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/cu
 		<set-variable value='#[%dw 2.0&#10;output application/java&#10;var dateTime = (payload.parts."from".content as String) default ""&#10;---&#10;dateTime as DateTime default null]' doc:name="from-date" doc:id="885b5986-94bc-46c6-9929-78fce427b230" variableName="from-date" />
 		<set-variable value='#[%dw 2.0&#10;output application/java&#10;var dateTime = (payload.parts."to".content as String) default ""&#10;---&#10;dateTime as DateTime default null]' doc:name="to-date" doc:id="b87f5fd0-4f56-4963-a20c-b051e7693359" variableName="to-date" />
 	</sub-flow>
-	<sub-flow name="set-test-variables" doc:id="6e06d4dc-e5eb-49fc-ba46-6f5b6044543a" >
-		<set-variable value="AKIARTXBRMDI4LEFXES4" doc:name="aws-access-key" doc:id="7c9d4ab1-b56a-4241-99aa-d6309fe33316" variableName="aws-access-key"/>
-		<set-variable value="UBnWele7lpGeGav0IWdyp3byppLifMTXtORpXhpR" doc:name="aws-secret-key" doc:id="6f68ef43-ccb2-48e1-afd6-3b4d077de185" variableName="aws-secret-key"/>
-		<set-variable value="test-bucket-324324x23" doc:name="s3-bucket-name" doc:id="5858fb7b-4643-4d3e-a485-214166664b81" variableName="s3-bucket-name"/>
-		<set-variable value="us-east-1" doc:name="s3-bucket-region" doc:id="ecf710a1-6328-48db-a62c-88ec611e1612" variableName="s3-bucket-region"/>
-	</sub-flow>
 	<flow name="list-objects" doc:id="3c998533-b658-4f1c-882f-5380c1290b3d">
 		<flow-ref doc:name="retrieve-form-data" doc:id="337fe608-e08e-4e60-b315-893809552794" name="retrieve-form-data"/>
 		<s3:list-objects doc:name="List Objects" doc:id="8214de89-9f99-4636-a025-1ea13a26b0c1" config-ref="Amazon_S3_Configuration" bucketName='#[vars."s3-bucket-name"]' prefix='#[vars."object-prefix"]'/>
