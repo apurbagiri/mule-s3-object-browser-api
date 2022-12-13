@@ -21,9 +21,6 @@ http://localhost:8081/console/
 ```
 <br />
 
-### Known Issues
-* Downloading large size files
-> All media type download seems to be working fine when the file size is low. But, as the file size grows, the Mule AWS S3 connector seems to be throwing error `Unexpected error while Streaming content. Data read has a different checksum than expected. Was ..., but expected ...`. Tried increasing memory buffer size but that didn't help. Will look into it when I get a chance. 
 
 <br />
 
