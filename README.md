@@ -1,4 +1,4 @@
-# s3-object-browser-api
+# mule-s3-object-browser-api
 
 [MuleSoft](https://www.mulesoft.com/) based REST API with integrated web UI to retrieve & download objects stored in AWS S3 bucket. 
 
