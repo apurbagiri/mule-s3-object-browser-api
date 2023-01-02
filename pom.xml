@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.apurbagiri</groupId>
-	<artifactId>s3-object-browser-api</artifactId>
+	<artifactId>mule-s3-object-browser-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>s3-object-browser-api</name>
+	<name>mule-s3-object-browser-api</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
